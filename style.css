@@ -1,0 +1,598 @@
+/* 1. IMPORTAZIONE FONT E VARIABILI */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+:root {
+    --primary: #2d5a27;       /* Verde scuro (Natura/Turismo) */
+    --accent: #f39c12;        /* Arancione (Attenzione/Bottoni) */
+    --bg-light: #f8f9fa;      /* Grigio chiarissimo per sfondo */
+    --text-dark: #2c3e50;     /* Grigio scuro per i testi */
+    --white: #ffffff;
+    --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marker-monumento { border-color: #e67e22 !important; } /* Arancione */
+.marker-ristoro { border-color: #27ae60 !important; }   /* Verde */
+.marker-comune { border-color: #2980b9 !important; }    /* Blu */
+.marker-default { border-color: #ffffff !important; }   /* Bianco */
+
+/* 2. RESET E LAYOUT BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Rimuove il flash blu al tocco su mobile */
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    overflow: hidden; /* Evita lo scroll della pagina intera */
+}
+
+/* 3. GESTIONE DELLE VISTE (PAGINE) */
+.view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Centra in orizzontale */
+    justify-content: center; /* Centra in verticale */
+    background: var(--bg-light);
+    z-index: 10;
+    padding: 30px;
+    text-align: center;      /* Centra i testi internamente */
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 4. TIPOGRAFIA */
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--primary);
+    text-align: center;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1, p {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Assicura che i bottoni siano sempre al centro */
+button {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 5. BOTTONI MODERNI */
+button {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 16px;
+    background: var(--primary);
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+button:active {
+    transform: scale(0.96);
+    background: #1e3d1a;
+}
+
+/* Bottone secondario (es. Scelta lingua) */
+#view-language button {
+    background: var(--white);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+
+/* 6. MASCOTTE E ONBOARDING */
+.mascot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#mascot-img {
+    width: 160px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+.bubble {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    border: 2px solid #e0e0e0;
+    width: 90%;
+    max-width: 400px;
+}
+
+.bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -15px; /* Spostata in basso */
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid var(--white); /* Punta verso il basso */
+    display: block;
+    width: 0;
+}
+
+
+
+
+
+/* TERZA SCHERMATA*/
+/* -- MENU PRINCIPALE -- */
+/* MENU A GRIGLIA */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 100%;
+    max-width: 350px; /* Impedisce alla griglia di allargarsi troppo su tablet */
+    margin: 20px auto 0 auto; /* Centra la griglia stessa */
+    justify-items: center;    /* Centra i bottoni nelle celle */
+    align-items: center;
+}
+
+/* PULSANTI GRIGLIA */
+.grid button {
+    height: 120px;
+    flex-direction: column;
+    font-size: 0.9rem;
+    padding: 10px;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+/* -- MAPPA FULLSCREEN TOUR GUIDATO -- */
+#view-map {
+    padding: 0; /* Rimuove padding per la mappa */
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Contenitore dei pulsanti sopra la mappa */
+.map-header-controls {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Fondamentale per non allungare */
+    z-index: 1000;
+    pointer-events: none;
+    width: 100%; /* Assicura che il contenitore occupi tutta la larghezza */
+}
+
+/* Applichiamo pointer-events: auto ai pulsanti per renderli cliccabili */
+.map-header-controls button.back-btn-map,
+.map-header-controls button.btn-info-map {
+    pointer-events: auto;
+    background: var(--white) !important; /* Forza il colore bianco */
+    color: var(--text-dark) !important;  /* Forza il testo scuro */
+    height: 40px !important;             /* Forza l'altezza */
+    margin: 0 !important;                /* Rimuove margini ereditati */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+/* Stile specifico TASTO ESCI */
+button.back-btn-map {
+    width: auto !important;     /* BLOCCA L'ALLUNGAMENTO */
+    max-width: 120px !important; /* Limite massimo di sicurezza */
+    padding: 0 15px !important;
+    border-radius: 20px !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+}
+
+/* Stile specifico TASTO INFO */
+button.btn-info-map {
+    width: 40px !important;    /* BLOCCA LA LARGHEZZA PER FARLO TONDO */
+    border-radius: 50% !important;
+    font-size: 18px !important;
+    padding: 0 !important;     /* Rimuove padding che potrebbe deformarlo */
+}
+
+/* Container del marker personalizzato */
+.custom-photo-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Il cerchio con la foto */
+.marker-photo-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    overflow: hidden;
+    background-color: var(--primary); /* Colore di sfondo se la foto non carica */
+    transition: transform 0.2s;
+}
+
+.marker-photo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Effetto ingrandimento al tocco */
+.marker-photo-circle:active {
+    transform: scale(1.2);
+}
+
+/* Stile per il pallino GPS dell'utente */
+.user-location-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background-color: #007bff;
+    border: 2px solid white;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.pulse {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 123, 255, 0.4);
+    border-radius: 50%;
+    position: absolute;
+    animation: pulse-animation 2s infinite;
+    z-index: 1;
+}
+
+@keyframes pulse-animation {
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Pop-up Info (Legenda) */
+.info-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-content {
+    background: white;
+    width: 85%;
+    max-width: 400px;
+    padding: 25px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.legend-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* Stile per la nuvoletta nella leggenda */
+.legend-bubble {
+    background: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 15px;
+    position: relative;
+    margin: 10px auto;
+    width: fit-content;
+    border: 1px solid #ddd;
+}
+
+/* La punta della nuvoletta che guarda verso il basso (la mascotte) */
+.legend-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #f0f0f0;
+}
+
+.legend-bubble p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* La mascotte ridimensionata per la leggenda */
+.legend-mascot {
+    width: 70px;
+    height: auto;
+    margin: 5px auto 15px auto;
+    display: block;
+}
+
+/* Allineamento lista leggenda */
+.legend-list {
+    text-align: left;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+/* -- DETTAGLI LUOGO -- */
+#view-details {
+    background: white;
+    z-index: 2000; /* Deve stare sopra la mappa */
+    display: block; /* Sovrascriviamo il flex per gestire lo scroll */
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* CONTENITORE IMMAGINE */
+.details-content img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover; /* Taglia l'immagine bene senza deformarla */
+    border-bottom: 5px solid var(--primary);
+}
+
+.img-wrapper {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+/* PENSO SIA INUTILE 
+#detail-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}*/ 
+
+/* CONTENITORE NOME LUOGO */
+.text-container {
+    padding: 25px;
+    padding-bottom: 50px;
+}
+
+.text-container h1 {
+    text-align: left;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.text-container p {
+    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* PARTE AUDIO */
+.audio-player {
+    display: flex;
+    flex-direction: row; /* Elementi affiancati */
+    align-items: center; /* Allineamento verticale al centro */
+    background: rgba(0, 0, 0, 0.03);
+    padding: 12px 15px;
+    border-radius: 15px;
+    margin: 15px 0;
+    gap: 15px; /* Spazio tra pulsante e contenuti */
+}
+
+/* Il blocco a destra si prende tutto lo spazio rimanente */
+.audio-content-right {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Barra sopra, tempo sotto */
+    gap: 4px;
+}
+
+.audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--bg-light);
+}
+
+#audio-seek {
+    width: 100%;
+    cursor: pointer;
+    margin: 0;
+}
+
+.audio-time {
+    font-size: 0.75rem;
+    color: #666;
+    text-align: right; /* Durata allineata a destra sotto la barra */
+    font-family: monospace; /* Numeri sempre allineati */
+}
+
+#btn-play-pause {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+#btn-play-pause span {
+    display: flex;      /* Cambiato da block a flex */
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    line-height: 1;     /* Forza il carattere a non avere spazi extra sopra/sotto */
+    user-select: none;
+}
+
+.play-triangle {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 15px solid #f8f9fa; /* Colore del triangolo */
+    margin-left: 4px; /* Correzione ottica per centrarlo nel cerchio */
+}
+
+/* Container per allineare le due barre */
+.paused-icon-container {
+    display: flex;
+    gap: 5px; /* Spazio tra i due trattini */
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* La singola barra della pausa */
+.pause-bar {
+    width: 3px;         /* REGOLA QUI LO SPESSORE (es. 2px per più sottile) */
+    height: 16px;       /* Altezza dei trattini */
+    background-color: var(--bg-light); /* Colore dei trattini */
+    border-radius: 1px; /* Arrotonda leggermente le punte */
+}
+
+#btn-play-pause:active {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(0.95); /* Effetto pressione */
+}
+
+/* BOTTONE PORTAMI QUI */
+.nav-btn {
+    margin-top: 20px;
+    background: var(--accent);
+    width: 100%;
+}
+
+/* BOTTONE CHIUSURA */
+.close-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    z-index: 2001;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.view-bottom {
+    top: 0;
+    left: 0;
+    background: #fff;
+    z-index: 2000;
+    display: block !important; /* Sovrascrive il flex per lo scroll */
+    overflow-y: auto;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(100%); /* Nascosta in basso */
+}
+
+/* Quando togliamo la classe hidden, l'animazione parte */
+.view-bottom:not(.hidden) {
+    transform: translateY(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

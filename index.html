@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guida Paese</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" href="assets/mascotte.png">
+</head>
+<body>
+
+    <section id="view-language" class="view">
+        <div class="content">
+            <h1>Benvenuto</h1>
+            <p>Scegli la tua lingua / Choose your language</p>
+            <button onclick="app.setLanguage('it')">Italiano 🇮🇹</button>
+            <button onclick="app.setLanguage('en')">English 🇬🇧</button>
+        </div>
+    </section>
+
+    <section id="view-onboarding" class="view hidden">
+    <div class="mascot-container">
+        <div id="mascot-bubble" class="bubble" data-i18n="mascot_intro"></div>
+        
+        <img src="assets/mascotte.png" alt="Mascotte" id="mascot-img">
+        
+        <button onclick="app.showView('view-menu')" data-i18n="btn_first_access">
+            Avanti
+        </button>
+    </div>
+</section>
+
+    <section id="view-menu" class="view hidden">
+        <nav>
+            <h2 id="txt-menu-title" data-i18n="menu_title"> Cosa vuoi fare?</h2>          
+            <img src="assets/mascotte.png" alt="Mascotte" id="mascot-img">
+        </div>
+            <div class="grid">
+                <button onclick="app.showView('view-map')" data-i18n="btn_map">🗺️ Mappa Gratteri</button>
+                <button onclick="alert('In arrivo')" data-i18n="btn_info">ℹ️ Info Utili</button>
+                <button onclick="alert('In arrivo')" data-i18n="btn_gallery">📸 Gallery</button>
+                <button onclick="alert('In arrivo')" data-i18n="btn_settings">Impostazioni</button>
+            </div>
+        </nav>
+    </section>
+
+    <section id="view-map" class="view hidden">
+    <div id="map"></div>
+
+    <div class="map-header-controls">
+        <button class="back-btn-map" onclick="app.showView('view-menu')" data-i18n="btn_exit">⬅️ Esci</button>
+        <button class="btn-info-map" onclick="app.toggleLegend()">i</button>
+    </div>
+
+    <div id="info-popup" class="info-overlay hidden">
+    <div class="info-content">
+        <h3 data-i18n="legend_title">Esplora Gratteri</h3>
+        
+        <div class="legend-bubble">
+            <p data-i18n="legend_subtitle">Ecco cosa significano i colori:</p>
+        </div>
+
+        <img src="assets/mascotte.png" alt="Mascotte" class="legend-mascot">
+
+        <div class="legend-list">
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #e67e22;"></div> 
+                <span data-i18n="cat_monument">Monumenti</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #27ae60;"></div> 
+                <span data-i18n="cat_food">Ristoro</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #2980b9;"></div> 
+                <span data-i18n="cat_public">Edifici Pubblici</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #b929a1;"></div> 
+                <span data-i18n="cat_panoramic">Punto Panoramico</span>
+            </div>
+        </div>
+
+        <button class="nav-btn" onclick="app.toggleLegend()" data-i18n="btn_got_it" style="margin-top:15px;">Ho capito</button>
+    </div>
+</div>
+       
+    <section id="view-details" class="view view-bottom hidden">
+    <div class="details-content">
+        <button class="close-btn" onclick="app.closeDetails()">✕</button>
+        
+        <div class="img-wrapper">
+            <img id="detail-img" src="" alt="Immagine Punto di Interesse">
+        </div>
+
+        <div class="text-container">
+            <h1 id="detail-title"></h1>
+
+            <div class="audio-player">
+                <audio id="audio-element" src=""></audio>
+                
+                <button id="btn-play-pause" onclick="app.toggleAudio()">
+                    <span class="playing-icon">&#9658;</span>
+                </button>
+                
+                <div class="audio-content-right">
+                    <input type="range" id="audio-seek" value="0" step="1" oninput="app.seekAudio()">
+                    <div class="audio-time">
+                        <span id="current-time">00:00</span> / <span id="total-duration">00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <p id="detail-desc"></p>
+
+            <button id="btn-navigate" class="nav-btn" data-i18n="btn_navigate">📍 Portami qui</button>
+        </div>
+    </div>
+</section>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="locales.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
